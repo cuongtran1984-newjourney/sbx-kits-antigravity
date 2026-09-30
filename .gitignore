@@ -1,3 +1,5 @@
 *.zip
 .antigravitycli/
 .claude/
+.agents/
+skills-lock.json
