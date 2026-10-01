@@ -39,17 +39,6 @@ capabilities:
           - cloudcode-pa.googleapis.com:443
           - daily-cloudcode-pa.googleapis.com:443
           - generativelanguage.googleapis.com:443
-          # SDKMAN! and candidate distribution hosts
-          - get.sdkman.io:443
-          - api.sdkman.io:443
-          - github.com:443
-          - objects.githubusercontent.com:443
-          # Commonly used MCP hosts for code generation and artifact retrieval
-          - mcp.context7.com:443
-
-  - type: com.docker.sandbox/agent-context@1
-    config:
-      filename: AGENTS.md
 
   - type: com.docker.sandbox/credential@1
     optional: true
@@ -118,3 +107,16 @@ capabilities:
           user: agent
           env: [WORKSPACE_DIR]
           description: Seed permissive Antigravity settings for sandboxed operation
+      startup:
+        # sandboxd provisions the gateway separately (e.g. --static-mcp).
+        # Register its runtime endpoint; there is no MCP capability in v3.
+        - command: |
+            set -eu
+            [ -n "${MCP_GATEWAY_URL:-}" ] || exit 0
+            : "${MCP_SENTINEL_TOKEN_NAME:?MCP gateway auth sentinel is missing}"
+            agy mcp add \
+              --header "Authorization: Bearer $MCP_SENTINEL_TOKEN_NAME" \
+              mcp-gateway "$MCP_GATEWAY_URL"
+          user: agent
+          env: [MCP_GATEWAY_URL, MCP_SENTINEL_TOKEN_NAME]
+          description: Register the sandbox MCP gateway in Antigravity's global MCP config
