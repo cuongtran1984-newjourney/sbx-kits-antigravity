@@ -44,6 +44,8 @@ capabilities:
           - api.sdkman.io:443
           - github.com:443
           - objects.githubusercontent.com:443
+          # Commonly used MCP hosts for code generation and artifact retrieval
+          - mcp.context7.com:443
 
   - type: com.docker.sandbox/agent-context@1
     config:
@@ -70,7 +72,7 @@ capabilities:
           accessToken: agy-oauth-access-proxy-managed
           refreshToken: agy-oauth-refresh-proxy-managed
         credentialFile:
-          path: ${{ kit.env.HOME }}/.gemini/antigravity-cli/antigravity-oauth-token
+          path: ~/.gemini/antigravity-cli/antigravity-oauth-token
           structure:
             token:
               access_token: "{{.AccessToken}}"
