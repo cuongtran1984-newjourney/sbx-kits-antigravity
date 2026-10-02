@@ -107,16 +107,3 @@ capabilities:
           user: agent
           env: [WORKSPACE_DIR]
           description: Seed permissive Antigravity settings for sandboxed operation
-      startup:
-        # sandboxd provisions the gateway separately (e.g. --static-mcp).
-        # Register its runtime endpoint; there is no MCP capability in v3.
-        - command: |
-            set -eu
-            [ -n "${MCP_GATEWAY_URL:-}" ] || exit 0
-            : "${MCP_SENTINEL_TOKEN_NAME:?MCP gateway auth sentinel is missing}"
-            agy mcp add \
-              --header "Authorization: Bearer $MCP_SENTINEL_TOKEN_NAME" \
-              mcp-gateway "$MCP_GATEWAY_URL"
-          user: agent
-          env: [MCP_GATEWAY_URL, MCP_SENTINEL_TOKEN_NAME]
-          description: Register the sandbox MCP gateway in Antigravity's global MCP config
